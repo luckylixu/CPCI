@@ -1,0 +1,175 @@
+#!/bin/sh
+#### UNIX Script Documentation Block  ######################################
+#
+# Script Name: ex_cpci_gfs.sh.ecf
+#
+# This script does ...                                                        
+# After this, additional processing is performed by the following child        
+# scripts :                                                                   
+#                                                                             
+#  myushscript1.sh     : does ...                                             
+#  myushscript2.sh     : does ...                                             
+#                                                                             
+# Remarks :                                                                   
+# - anything appropriate                                                      
+#                                                                             
+#  History:                                                                   
+#                                                                             
+# - First implemented into production:                       25-Jul-2013    
+# - Updated for adding 1000mb-500mb thickness:               25-Jun-2019   
+#                                                                             
+#############################################################################
+# Batch job for CPC International Domain Forecast Maps
+#############################################################################
+#
+echo "date cycle = " $PDY $cyc $cyc  
+echo "comin_nawips_dir = " ${COMINnawips} 
+echo "data_dir = " ${DATA} 
+echo "fix_dir = " ${FIXcpci} 
+#
+# keep the following 7 lines
+set -x
+cd ${DATA}
+#
+msg="HAS BEGUN on `hostname`"
+postmsg "$jlogfile" "$msg"
+msg="Starting ex_cpci_gfs.sh.ecf SCRIPT ... generating the gfs maps"
+postmsg "$jlogfile" "$msg"
+#
+#
+for fh in 006 012 018 024 030 036 042 048 054 060 066 072 078 084 \
+          090 096 102 108 114 120 126 132 138 144 150 156 162 168 174 \
+          180 186 192 198 204 210 216 222 228 234 240 252 264 276 288 300 \
+          312 324 336 348 ; do
+#
+cp ${COMINnawips}/gfs_0p25_${PDY}${cyc}f${fh} ${DATA}/
+#
+error=$?
+done
+
+export err=$?;err_chk
+#
+#
+#..The following are forecast hour groups. Each task will perform on 1 group
+#.. and on 21 domains
+#
+fcs1="006 012 018 024"
+fcs2="030 036 042 048"
+fcs3="054 060 066 072"
+fcs4="078 084 090 096"
+fcs5="102 108 114 120"
+#
+## Column/Surface Level Variables - (2 tasks  2x42=84 maps)
+#
+echo "-n 1 $USHcpci/gfs_maps_precip_3_5_7day_1.sh DIR_precip_3_5_7day_1 "  >>gfs_poescript
+echo "-n 1 $USHcpci/gfs_maps_precip_3_5_7day_2.sh DIR_precip_3_5_7day_2 "  >>gfs_poescript
+#
+#
+## Column/Surface Level Variables - (55 tasks   5460 maps)
+for fname in cape_cin kndx liftx_mslp_precip precip pwatr thickness tmax2m tmin2m tmp2m totlx dewpt2m ; do
+for fn in 1 2 3 4 5 ; do
+ fce=fcs$fn
+ fcc=${!fce}
+ echo $fcc
+ echo "-n 1 $USHcpci/gfs_maps_${fname}_6hrly.sh $fcc DIR_${fname}_$fn "  >>gfs_poescript
+done
+done
+# gfs_maps_thickness_6hrly.sh
+#
+#
+## Pressure Level Variables
+#
+pcs1="006 012"
+pcs2="018 024"
+pcs3="030 036"
+pcs4="042 048"
+pcs5="054 060"
+pcs6="066 072"
+pcs7="078 084"
+pcs8="090 096"
+pcs9="102 108"
+pcs10="114 120"
+# following script has (60 tasks  and  60x2x21 = 2520 maps)
+for fname in rh_strmln ; do
+for lv in 925 850 700 500 300 200 ; do
+for fn in 1 2 3 4 5 6 7 8 9 10 ; do
+ fce=pcs$fn
+ fcc=${!fce}
+ echo "-n 1 $USHcpci/gfs_maps_PRSLVL_${fname}_6hrly.sh $fcc $lv DIR_${fname}_${lv}mb_$fn " >>gfs_poescript 
+done
+done
+done
+# following script has (24 tasks and 24x10x21 = 5040 maps) 
+fcs1="006 012 018 024 030 036 042 048 054 060"
+fcs2="066 072 078 084 090 096 102 108 114 120"
+for fname in hght wind ; do
+for lv in 925 850 700 500 300 200 ; do
+for fn in 1 2 ; do
+ fce=fcs$fn
+ fcc=${!fce}
+ echo "-n 1 $USHcpci/gfs_maps_PRSLVL_${fname}_6hrly.sh $fcc $lv DIR_${fname}_${lv}mb_$fn " >>gfs_poescript 
+done
+done
+done
+#following scipt has (120 tasks  and  4x20x6x21=10080 maps)
+fcs1="006 012 018 024"
+fcs2="030 036 042 048"
+fcs3="054 060 066 072"
+fcs4="078 084 090 096"
+fcs5="102 108 114 120"
+for fname in relvort_strmln tmp_prs thetae_prs vvel ; do
+for lv in 925 850 700 500 300 200 ; do
+for fn in 1 2 3 4 5 ; do
+ fce=fcs$fn
+ fcc=${!fce}
+ echo "-n 1 $USHcpci/gfs_maps_PRSLVL_${fname}_6hrly.sh $fcc $lv DIR_${fname}_${lv}mb_$fn " >>gfs_poescript 
+done
+done
+done
+# following 24h precip scrpt has (7 tasks and   7x21= 147 maps)
+dys="d1"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+dys="d2"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+dys="d3"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+dys="d4"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+dys="d5"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+dys="d6"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+dys="d7"
+echo "-n 1 $USHcpci/gfs_maps_precip_24h.sh DIR_precip_24h $dys"  >>gfs_poescript
+#
+#Total number of tasks = 268
+#Total number of graphics = 23331
+#
+chmod 775 $DATA/gfs_poescript
+export MP_PGMMODEL=mpmd
+export MP_CMDFILE=$DATA/gfs_poescript
+#
+# mpirun.lsf
+# mpirun -noconf $MP_CMDFILE
+mpirun -configfile $MP_CMDFILE
+#
+export err=$?;err_chk
+#
+#
+# tar and compress the gif data and then send the alert.
+#
+TARFILE=${model}.${PDY}_${RUN}_${cyc}.tar
+#
+# change dir to $TAROUT 
+cd ${TAROUT}
+tar -cvf ${TAROUT}/$TARFILE ${cyc}
+export err=$?;err_chk
+#
+# alert now
+if test $SENDDBN = 'YES'
+then
+  $DBNROOT/bin/dbn_alert MODEL CPC_WEB_GIF ${job} ${TAROUT}/${TARFILE}
+fi
+
+exit 0
+

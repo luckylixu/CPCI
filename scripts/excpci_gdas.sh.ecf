@@ -1,0 +1,93 @@
+#!/bin/sh
+#### UNIX Script Documentation Block  ##########################################
+#
+# Script Name: ex_cpci_gdas.sh.ecf
+#
+# This script does ...                                                        
+# After this, additional processing is performed by the following child        
+# scripts :                                                                   
+#                                                                             
+#  myushscript1.sh     : does ...                                             
+#  myushscript2.sh     : does ...                                             
+#                                                                             
+# Remarks :                                                                   
+# - anything appropriate                                                      
+#                                                                             
+#  History:                                                                   
+#                                                                             
+# - First implemented into production:                       25-Jul-2013    
+#                                                                             
+################################################################################
+#############################################################################
+# Batch job for CPC International Domain Forecast Maps
+#############################################################################
+#
+echo "date cycle = " $PDY $cyc
+echo "comin_nawips_dir = " ${COMINnawips} 
+echo "data_dir = " ${DATA} 
+echo "fix_dir = " ${FIXcpci} 
+#
+# keep the following 7 lines
+set -x
+cd ${DATA}
+
+msg="HAS BEGUN on `hostname`"
+postmsg "$jlogfile" "$msg"
+msg="Starting ex_cpci_gdas.sh.ecf SCRIPT ... generating the gdas maps"
+postmsg "$jlogfile" "$msg"
+#
+#  ${PDY} ${cyc} ${comin} ${data} !!!
+#
+$USHcpci/gdas_copy_nawips_comin_files.sh
+export err=$?;err_chk
+#
+#
+#..The following are forecast hour 006.
+#.. and on 21 domains
+#
+## Column/Surface Level Variables
+#  Total #of gifs = 21x11 = 231
+#
+for fname in cape cin kndx liftx mslp_precip precip pwatr tmax2m tmin2m tmp2m totlx ; do
+ echo "-n 1 $USHcpci/gdas_maps_${fname}.sh DIR_${fname} "  >>gdas_poescript
+done
+#
+## Pressure Level Variables
+#  #  Total #of gifs = 21x6x7 = 882
+#
+for fname in relvort_strmln rh_strmln tmp_prs thetae_prs vvel wind hght ; do
+for lv in 925 850 700 500 300 200 ; do
+ echo "-n 1 $USHcpci/gdas_maps_PRSLVL_${fname}.sh $lv DIR_${fname}_${lv}mb " >>gdas_poescript 
+done
+done
+#
+# Final Total of All gifs = 231+882 = 1113
+#
+chmod 775 $DATA/gdas_poescript
+export MP_PGMMODEL=mpmd
+export MP_CMDFILE=$DATA/gdas_poescript
+#
+# mpirun.lsf
+mpirun -configfile $MP_CMDFILE
+#
+export err=$?;err_chk
+#
+#
+#
+# tar and compress the gif data and then send the alert.
+#
+TARFILE=${model}.${PDY}_${RUN}_${cyc}.tar
+#
+# change dir to $TAROUT
+cd ${TAROUT}
+tar -cvf ${TAROUT}/$TARFILE ${cyc}
+export err=$?;err_chk
+#
+# alert now
+if test $SENDDBN = 'YES'
+then
+  $DBNROOT/bin/dbn_alert MODEL CPC_WEB_GIF ${job} ${TAROUT}/${TARFILE}
+fi
+
+exit 0
+

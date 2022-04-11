@@ -1,0 +1,38 @@
+! COLTBL.ISO
+!
+! Color table for filling isotachs 
+!
+!Color name    Abrev   Red  Green   Blue  X color name
+WHITE           WHI    255    255    255  white
+BLACK           BLA      0      0      0  black
+RED             RED    255    250    170  red
+GREEN           GRE    255    232    120  green
+BLUE            BLU    255    192     60  blue
+YELLOW          YEL    255    160      0  yellow
+CYAN            CYA    255     96      0  cyan
+MAGENTA         MAG    255     50      0  magenta
+CORNSILK        CSK    200     20      0  cornsilk
+LTGOLDNROD      LGR    170      0      0  LightGoldenrod1
+LTGOLDNROD3     LG3    120      0      0  LightGoldenrod3
+LTGOLDNROD4     LG4    200    255    190  LightGoldenrod4
+LTCYAN          LCY    150    245    140  LightCyan
+LTBLUE1         LB1    120    245    115  LightBlue1
+POWDERBLUE      PWB     80    240     80  powderblue
+DPSKYBLUE       DSB     55    210     60  DeepSkyBlue
+CORNFLOWER      CFR     30    180     30  cornflower
+THISTLE         THS      5    150      5  thistle
+PLUM            PLU    180    240    250  plum
+MDORCHID        MOR    150    210    250  MediumOrchid
+DKMAGENTA       DMA    120    185    250  DarkMagenta
+DKSEAGREEN1     DS1     80    165    245  DarkSeaGreen1
+DKSEAGREEN3     DS3     60    150    245  DarkSeaGreen3
+DKSEAGREEN      DSG     40    130    240  DarkSeaGreen
+DKSEAGREEN4     DS4     30    110    235  DarkSeaGreen4
+PAGREEN         PAG     20    100    210  PaleGreen
+LTGREEN         LTG    192    180    255  green3
+MDGREEN         MDG    160    140    255  green4
+KYGREEN         KYG     60    110     10  KellyGreen
+PURPLE          PUR    128    112    235  purple2
+PLUM            PLU    150    150    150  magenta4
+VANILLA         VAN    255    228    220  bisque1
+WHITE           WHI    255    255    255  white

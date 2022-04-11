@@ -1,0 +1,46 @@
+#BSUB -J %E%cpci_gfs_%CYC%
+#BSUB -o %COM%/output/%ENVIR%/today/cpci_gfs_%CYC%.o%J
+#BSUB -e %COM%/output/%ENVIR%/today/cpci_gfs_%CYC%.o%J
+#BSUB -P %PROJ%
+#BSUB -q %QUEUE%
+#BSUB -cwd /tmp
+#BSUB -W 03:15
+#BSUB -L /bin/sh
+#BSUB -R affinity[core(1):distribute=balance]
+#BSUB -n 268
+#BSUB -R span[ptile=28]
+
+%include <head.h>
+%include <envir-p3.h>
+
+set -x
+
+export model=cpci
+export NET=gfs
+export RUN=gfs
+export cyc=%CYC%
+export ffhr=0
+
+%include <model_ver.h>
+# Module load here
+module load gempak/${gempak_ver}
+
+module list
+
+export MP_LABELIO=yes
+export MP_STDOUTMODE=unordered
+
+# SPECIFY WHICH JOB TO RUN and run the job
+${HOMEcpci}/jobs/JCPCI
+#${NWROOT}/cpci.${cpci_ver}/jobs/JCPCI
+
+if [ $? -ne 0 ]; then
+  ecflow_client --abort
+  exit
+fi
+
+%include <tail.h>
+
+%manual
+%end
+

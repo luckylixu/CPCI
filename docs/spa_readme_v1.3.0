@@ -1,0 +1,57 @@
+Instructions For the benefit SPA:
+After satisfying your checklist:
+
+Model cpci: Version:v1.3.0
+
+1. Goto "jobs" directory
+2. Take the help of the (3) job files
+   CPCI.GDAS.JSUB
+   CPCI.GEFS.JSUB
+   CPCI.GFS.JSUB
+2. Prepare top-level JSUB (.ecf)  script files accordingly
+4. submit you job(s)
+5. Check for output files (number) (in your appropriate $COMOUT directory)
+
+A quick verification of successful run(s):
+Number of gif files: GFS:23331  GDAS:1113   GEFS:5040
+
+In the $COMOUT directory, please try the following commands:
+
+[Vadlamani.Kumar@m71a1 out]$ ls gfs*.gif |  wc
+  23331   23331 1129776
+[Vadlamani.Kumar@m71a1 out]$ ls gefs*.gif | wc
+   5040    5040  310678
+[Vadlamani.Kumar@m71a1 out]$ ls gdas*.gif | wc
+   1113    1113   54842
+---------------------------------------------------------------------
+
+General Notes About Changes:
+---------------------------------------------------------------------
+1. Implementation of version v1.3.0
+---------------------------------------------------------------------
+
+Changes in USH Scripts:
+-----------------------
+Changes have been made in the following 3 files
+
+1. gefs_copy_nawips_comin_files.sh
+Change in code: 
+#
+for hr in 006 012 018 024 030 036 042 048 054 060 066 072 078 084 090 096 102 108 114 120 \
+for hr in 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240 \
+for hr in 246 252 258 264 270 276 282 288 294 300 306 312 318 324 330 336 342 348 354 360 \
+for hr in 366 372 378 384 ; do
+ cp ${COMINnawips}/gep*_0p50_${PDY}${cyc}f$hr  ${DATA}/
+done
+#
+
+2. gefs_maps_10m_windspd_spa_6hrly.sh
+   The member count in the loop has been changed from 20 to 30.
+
+3. gefs_maps_PRSLVL_hght_spa_6hrly.sh
+   The member count in the loop has been changed from 20 to 30.
+
+Other ush scripts remain the same as in the current production version (v1.2.1).
+
+
+Pleae contact me via email at vadlamani.kumar@noaa.gov, if you have any questions.

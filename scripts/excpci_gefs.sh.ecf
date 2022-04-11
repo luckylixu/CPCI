@@ -1,0 +1,162 @@
+#!/bin/sh
+#### UNIX Script Documentation Block  ##########################################
+#
+# Script Name: ex_cpci_gefs.sh.ecf
+#
+# This script does ...                                                        
+# After this, additional processing is performed by the following child        
+# scripts :                                                                   
+#                                                                             
+#  myushscript1.sh     : does ...                                             
+#  myushscript2.sh     : does ...                                             
+#                                                                             
+# Remarks :                                                                   
+# - anything appropriate                                                      
+#                                                                             
+#  History:                                                                   
+#                                                                             
+# - First implemented into production:                       25-Jul-2013    
+#                                                                             
+################################################################################
+#############################################################################
+# Batch job for CPC International Domain Forecast Maps
+#############################################################################
+#
+echo "date cycle = " $PDY $cyc $cyc  
+echo "comin_nawips_dir = " ${COMINnawips} 
+echo "data_dir = " ${DATA} 
+echo "fix_dir = " ${FIXcpci} 
+#
+# keep the following 7 lines
+set -x
+cd ${DATA}
+
+msg="HAS BEGUN on `hostname`"
+postmsg "$jlogfile" "$msg"
+msg="Starting ex_cpci_gefs.sh.ecf SCRIPT ... generating the gefs maps"
+postmsg "$jlogfile" "$msg"
+#
+#  ${PDY} ${cyc} ${comin} ${data} !!!
+#
+$USHcpci/gefs_copy_nawips_comin_files.sh
+export err=$?;err_chk
+#
+#
+#..The following are forecast hour groups. Each task will perform on 1 group
+#.. and on 21 domains
+#
+fcs1="006"
+fcs2="012"
+fcs3="018"
+fcs4="024"
+fcs5="030"
+fcs6="036"
+fcs7="042"
+fcs8="048"
+fcs9="054"
+fcs10="060"
+fcs11="066"
+fcs12="072"
+fcs13="078"
+fcs14="084"
+fcs15="090"
+fcs16="096"
+fcs17="102"
+fcs18="108"
+fcs19="114"
+fcs20="120"
+#
+## GEFS 10m wind speed Probability Excedance Diagrams (16 tasks 4-thresholds 21 domains, 16x4x21=1344 gifs)
+#
+for fname in windspd ; do
+for fn in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ; do
+ fce=fcs$fn
+ fcc=${!fce}
+ echo "-n 1 $USHcpci/gefs_maps_10m_${fname}_excdn_6hrly.sh $fcc 10 20 30 40 DIRprb_${fname}_$fn " >>gefs_poescript
+done
+done
+#
+#
+#
+## GEFS 24h Total Precip Probability Excedance Diagrams (days 1-4) (12 tasks, 21x24=504 graphs)
+for dn in d1 d2 d3 d4 ; do
+ th=1
+ echo "-n 1 $USHcpci/gefs_maps_${dn}_24h_precip_excdn.sh 5 10 DIRprb_${dn}_$th "  >>gefs_poescript
+ th=2
+ echo "-n 1 $USHcpci/gefs_maps_${dn}_24h_precip_excdn.sh 25 50 DIRprb_${dn}_$th "  >>gefs_poescript
+ th=3
+ echo "-n 1 $USHcpci/gefs_maps_${dn}_24h_precip_excdn.sh 100 150 DIRprb_${dn}_$th "  >>gefs_poescript
+done
+#
+#
+## GEFS week1 & week2 Precip Probability Excedance Diagrams (12 tasks, 12x21=252 graphs)
+#
+for wkn in wk1 wk2 ; do
+ th=1
+ echo "-n 1 $USHcpci/gefs_maps_${wkn}_precip_excdn.sh 25 DIRprb_${wkn}_$th "  >>gefs_poescript
+ th=2
+ echo "-n 1 $USHcpci/gefs_maps_${wkn}_precip_excdn.sh 50 DIRprb_${wkn}_$th "  >>gefs_poescript
+ th=3
+ echo "-n 1 $USHcpci/gefs_maps_${wkn}_precip_excdn.sh 75 DIRprb_${wkn}_$th "  >>gefs_poescript
+ th=4
+ echo "-n 1 $USHcpci/gefs_maps_${wkn}_precip_excdn.sh 100 DIRprb_${wkn}_$th " >>gefs_poescript
+ th=5
+ echo "-n 1 $USHcpci/gefs_maps_${wkn}_precip_excdn.sh 150 DIRprb_${wkn}_$th " >>gefs_poescript
+ th=6
+ echo "-n 1 $USHcpci/gefs_maps_${wkn}_precip_excdn.sh 300 DIRprb_${wkn}_$th " >>gefs_poescript
+done
+#
+## GEFS 500mb heights Spaghetti Diagrams (60 tasks, 60x21=1260 graphs)
+#
+for fname in hght ; do
+for lv in 500 ; do
+for fn in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
+ fce=fcs$fn
+ fcc=${!fce}
+ echo "-n 1 $USHcpci/gefs_maps_PRSLVL_${fname}_spa_6hrly.sh $fcc $lv 5550 5650 DIRspa_${fname}_${lv}mb_$fn/5550 " >>gefs_poescript 
+ echo "-n 1 $USHcpci/gefs_maps_PRSLVL_${fname}_spa_6hrly.sh $fcc $lv 5750 5850 DIRspa_${fname}_${lv}mb_$fn/5750 " >>gefs_poescript 
+ echo "-n 1 $USHcpci/gefs_maps_PRSLVL_${fname}_spa_6hrly.sh $fcc $lv 5800 5900 DIRspa_${fname}_${lv}mb_$fn/5800 " >>gefs_poescript 
+done
+done
+done
+#
+## GEFS 10m wind speed Spaghetti Diagrams (80 tasks, 80x21=1680 graphs)
+#
+for fname in windspd ; do
+for lv in 10 ; do
+for fn in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
+ fce=fcs$fn
+ fcc=${!fce}
+ echo "-n 1 $USHcpci/gefs_maps_10m_${fname}_spa_6hrly.sh $fcc $lv 10 DIRspa_${lv}m_${fname}_$fn/10 " >>gefs_poescript
+ echo "-n 1 $USHcpci/gefs_maps_10m_${fname}_spa_6hrly.sh $fcc $lv 20 DIRspa_${lv}m_${fname}_$fn/20 " >>gefs_poescript
+ echo "-n 1 $USHcpci/gefs_maps_10m_${fname}_spa_6hrly.sh $fcc $lv 30 DIRspa_${lv}m_${fname}_$fn/30 " >>gefs_poescript
+ echo "-n 1 $USHcpci/gefs_maps_10m_${fname}_spa_6hrly.sh $fcc $lv 40 DIRspa_${lv}m_${fname}_$fn/40 " >>gefs_poescript
+done
+done
+done
+#
+# Total 180 tasks  and 5040 gifs
+#
+chmod 775 $DATA/gefs_poescript
+export MP_PGMMODEL=mpmd
+export MP_CMDFILE=$DATA/gefs_poescript
+#
+mpirun -configfile $MP_CMDFILE
+export err=$?;err_chk
+#
+# tar and compress the gif data and then send the alert.
+#
+TARFILE=${model}.${PDY}_${RUN}_${cyc}.tar
+#
+# change dir to $TAROUT 
+cd ${TAROUT}
+tar -cvf ${TAROUT}/$TARFILE ${cyc}
+export err=$?;err_chk
+#
+# alert now
+if test $SENDDBN = 'YES'
+then
+  $DBNROOT/bin/dbn_alert MODEL CPC_WEB_GIF ${job} ${TAROUT}/${TARFILE}
+fi
+
+exit 0
