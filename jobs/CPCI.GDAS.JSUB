@@ -60,7 +60,7 @@ echo $today
 export COMROOT=/com2
 gfspath=`compath.py gfs`
 export COMINnawips=$gfspath/prod/gdas.$today/$cyc/atmos/gempak
-export COMOUT=/gpfs/dell2/ptmp/$LOGNAME/com/comout/$model
+export COMOUT=/gpfs/dell2/ptmp/$LOGNAME/com/$model
 #
 export SENDCOM=NO
 export SENDDBN=NO
