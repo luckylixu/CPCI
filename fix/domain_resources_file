@@ -21,6 +21,8 @@ sasia_cb="1/H/LC/0.5;0.04/0.7;0.012/-1|0.8/2/sw"
 satl_cb="1/H/LC/0.5;0.08/0.7;0.012/-1|0.8/2/sw"
 ukraine_cb="1/H/LC/0.5;0.02/0.7;0.012/-1|0.8/2/sw"
 wafrica_cb="1/H/LC/0.5;0.13/0.7;0.012/-1|0.8/2/sw"
+cafrica_cb="1/H/LC/0.5;0.13/0.7;0.012/-1|0.8/2/sw"
+TimorLeste_cb="1/H/LC/0.5;0.13/0.7;0.012/-1|0.8/2/sw"
 # gridline spacinng
 afghanistan_ltln="1/10/1/1;1/2;2//2"
 africa_ltln="1/10/1/1;1/10;10//2"
@@ -43,6 +45,8 @@ sasia_ltln="1/10/1/1;1/10;10//2"
 satl_ltln="1/10/1/1;1/10;10//2"
 ukraine_ltln="1/10/1/1;1/5;5//2"
 wafrica_ltln="1/10/1/1;1/10;10//2"
+cafrica_ltln="1/10/1/1;1/10;10//2"
+TimorLeste_ltln="1/10/1/1;1/10;10//2"
 #streamline density
 afghanistan_strm="1.0/0.5/1//"
 camerica_strm="0.5/0.5/1//"
@@ -65,6 +69,8 @@ samerica_strm="0.25/0.3/5//"
 namerica_strm="0.25/0.3/5//"
 sasia_strm="0.3/0.3/5//"
 ukraine_strm="0.6/0.8/5//"
+cafrica_strm="0.3/0.3/5//"
+TimorLeste_strm="0.3/0.3/5//"
 #
 #=====================================================
 
