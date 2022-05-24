@@ -1,0 +1,72 @@
+#!/bin/sh
+#### UNIX Script Documentation Block  ###########################################
+#
+# Job Submission Script Name: CPCI.GFS.JSUB
+#
+# This script initiates the jjob script JCPCI
+# which in turn executes the appropriate exec_script that runs the corresponding
+# set if ush scripts :
+#
+#  myushscript1.sh     : does ...
+#  myushscript2.sh     : does ...
+#
+# Remarks :
+# - anything appropriate
+#
+#  History:
+#
+# - First implemented into production:                       December-2014
+#
+#################################################################################
+#
+#############################################################################
+# Batch job for CPC International Domain Forecast Maps
+#############################################################################
+#BSUB -n 264
+#BSUB -R span[ptile=24]
+#BSUB -x
+#BSUB -J cpci.gfs
+#BSUB -e cpci.gfs.stderr.%J
+#BSUB -o cpci.gfs.stdout.%J
+#BSUB -q "dev2"
+#BSUB -R "affinity[core]"
+#BSUB -W 02:40
+#BSUB -P CPC-T2O
+module load smpi
+#
+set -x
+export envir=prod
+export job=cpci
+export cyc=06
+export ffhr=0
+#
+export cpci_ver=v1.3.2
+export HOMEcpci=/gpfs/dell2/cpc/noscrub/$LOGNAME/nw${envir}/cpci.${cpci_ver}
+#
+export model=gfs
+export RUN=gfs
+export NET=gfs
+export DATAROOT=/gpfs/dell2/ptmp/$LOGNAME/tmpnwprd/$model
+export NWROOTp1=/gpfs/dell2/cpc/noscrub/$LOGNAME/nwprod
+export NWROOT=/gpfs/dell2/cpc/noscrub/$LOGNAME/nwprod
+export HOMEprod=/gpfs/dell2/cpc/noscrub/$LOGNAME/nwprod
+#
+export COMROOT=/com
+export COMOUT=/gpfs/dell2/ptmp/$LOGNAME/com/$model
+#
+#
+today=`date --date "0 day ago" "+%Y%m%d"`
+# today=20220515
+echo $today
+#
+gfspath=`compath.py gfs`
+export COMINnawips=$gfspath/prod/gfs.$today/$cyc/atmos/gempak
+#
+
+#
+export SENDCOM=NO
+export SENDDBN=NO
+export SENDECF=NO
+#
+# CALL jjob script here
+$HOMEcpci/jobs/JCPCI
