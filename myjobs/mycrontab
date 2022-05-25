@@ -29,7 +29,7 @@
 
 
 #CPCI
-0 5 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 00 &> /u/Li.Xu/cpci_00.cron.out )
-0 11 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 06 &> /u/Li.Xu/cpci_06.cron.out )
-0 17 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 12 &> /u/Li.Xu/cpci_12.cron.out )
-0 23 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 18 &> /u/Li.Xu/cpci_18.cron.out )
+0 7 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 00 &> /u/Li.Xu/cpci_00.cron.out )
+0 13 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 06 &> /u/Li.Xu/cpci_06.cron.out )
+0 19 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 12 &> /u/Li.Xu/cpci_12.cron.out )
+0 1 * * * (source /u/Li.Xu/bashrc.bak; /gpfs/dell2/cpc/noscrub/Li.Xu/nwprod/cpci.v1.3.2/myjobs/cron.sh 18 &> /u/Li.Xu/cpci_18.cron.out )
