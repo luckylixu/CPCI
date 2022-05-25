@@ -1,7 +1,7 @@
 #!/bin/sh
 #### UNIX Script Documentation Block  ###########################################
 #
-# Job Submission Script Name: CPCI.GDAS.JSUB
+# Job Submission Script Name: CPCI.GEFS.JSUB
 #
 # This script initiates the jjob script JCPCI
 # which in turn executes the appropriate exec_script that runs the corresponding
@@ -22,45 +22,44 @@
 #############################################################################
 # Batch job for CPC International Domain Forecast Maps
 #############################################################################
-#BSUB -n 53
+#BSUB -n 180
 #BSUB -R span[ptile=24]
 #BSUB -x
-#BSUB -J cpci.gdas
-#BSUB -e cpci.gdas.stderr.%J
-#BSUB -o cpci.gdas.stdout.%J
+#BSUB -J cpci.gefs
+#BSUB -e cpci.gefs.stderr.%J
+#BSUB -o cpci.gefs.stdout.%J
 #BSUB -q "dev2"
 #BSUB -R "affinity[core]"
-#BSUB -W 00:59
+#BSUB -W 02:29
 #BSUB -P CPC-T2O
-#module load ibmpe
 module load smpi
-# module load impi
 #
 set -x
 export envir=prod
 export job=cpci
-export cyc=06
+export cyc=18
 export ffhr=0
 #
 export cpci_ver=v1.3.2
 export HOMEcpci=/gpfs/dell2/cpc/noscrub/$LOGNAME/nw${envir}/cpci.${cpci_ver}
 #
-export model=gdas
-export RUN=gdas
-export NET=gfs
+export model=gefs
+export RUN=gefs
+export NET=gefs
 export DATAROOT=/gpfs/dell2/ptmp/$LOGNAME/tmpnwprd/$model
 export NWROOTp1=/gpfs/dell2/cpc/noscrub/$LOGNAME/nwprod
 export NWROOT=/gpfs/dell2/cpc/noscrub/$LOGNAME/nwprod
 export HOMEprod=/gpfs/dell2/cpc/noscrub/$LOGNAME/nwprod
 #
-today=`date --date "0 day ago" "+%Y%m%d"`
+today=`date --date "1 day ago" "+%Y%m%d"`
 # today=20220515
 echo $today
 #
-export COMROOT=/com2
-gfspath=`compath.py gfs`
-export COMINnawips=$gfspath/prod/gdas.$today/$cyc/atmos/gempak
-export COMOUT=/gpfs/dell2/ptmp/$LOGNAME/com/comout/$model
+export COMROOT=/com
+export COMOUT=/gpfs/dell2/ptmp/$LOGNAME/com/$model
+
+gefspath=`compath.py gefs`
+export COMINnawips=$gefspath/prod/gefs.$today/$cyc/atmos/gempak
 #
 export SENDCOM=NO
 export SENDDBN=NO
