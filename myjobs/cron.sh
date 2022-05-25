@@ -21,6 +21,7 @@ fi
 
 
 cd "$( dirname "${BASH_SOURCE[0]}")"
+pwd
 
 echo 'run for cyc:' $1
 
